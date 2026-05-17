@@ -106,6 +106,9 @@
       }
     },
     "sensor": {
+      "battery_slot": {
+        "name": "Battery {slot}"
+      },
       "doorbell_volume": {
         "name": "Doorbell volume"
       },

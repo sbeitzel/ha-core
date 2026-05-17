@@ -23,6 +23,7 @@ from .device_mocks import (
     FRONT_DOOR_DEVICE_ID,
     INGRESS_DEVICE_ID,
     INTERNAL_DEVICE_ID,
+    SPOTLIGHT_DEVICE_ID,
 )
 
 from tests.common import async_fire_time_changed, snapshot_platform
@@ -61,6 +62,7 @@ def create_deprecated_and_disabled_sensor_entities(
         create_entry("front", desc, FRONT_DEVICE_ID)
         create_entry("front_door", desc, FRONT_DOOR_DEVICE_ID)
         create_entry("internal", desc, INTERNAL_DEVICE_ID)
+        create_entry("spotlight", desc, SPOTLIGHT_DEVICE_ID)
 
     # Disabled
     for desc in ("wifi_signal_category", "wifi_signal_strength"):
@@ -69,6 +71,7 @@ def create_deprecated_and_disabled_sensor_entities(
         create_entry("ingress", desc, INGRESS_DEVICE_ID)
         create_entry("front_door", desc, FRONT_DOOR_DEVICE_ID)
         create_entry("internal", desc, INTERNAL_DEVICE_ID)
+        create_entry("spotlight", desc, SPOTLIGHT_DEVICE_ID)
 
 
 async def test_states(
@@ -235,3 +238,82 @@ async def test_only_chime_devices(
     await hass.async_block_till_done()
 
     assert "UnboundLocalError" not in caplog.text  # For issue #109210
+
+
+@pytest.mark.parametrize(
+    ("device_id", "device_name"),
+    [
+        pytest.param(FRONT_DOOR_DEVICE_ID, "front_door", id="doorbell"),
+        pytest.param(FRONT_DEVICE_ID, "front", id="stickup_cam"),
+        pytest.param(INGRESS_DEVICE_ID, "ingress", id="other"),
+    ],
+)
+@pytest.mark.usefixtures("mock_setup_entry")
+async def test_battery_unique_id_migration(
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+    mock_ring_client: Mock,
+    device_id: int,
+    device_name: str,
+) -> None:
+    """Test that battery sensor unique_id is migrated from battery to battery_1."""
+    entry = MockConfigEntry(
+        title="Ring",
+        domain=DOMAIN,
+        data={
+            "username": "foo@bar.com",
+            "token": {"access_token": "mock-token"},
+        },
+        unique_id="foo@bar.com",
+        version=1,
+        minor_version=3,
+    )
+    entry.add_to_hass(hass)
+
+    old_unique_id = f"{device_id}-battery"
+    entity = entity_registry.async_get_or_create(
+        domain=SENSOR_DOMAIN,
+        platform=DOMAIN,
+        unique_id=old_unique_id,
+        suggested_object_id=f"{device_name}_battery",
+        config_entry=entry,
+    )
+    assert entity.unique_id == old_unique_id
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    migrated = entity_registry.async_get(entity.entity_id)
+    assert migrated is not None
+    assert migrated.unique_id == f"{device_id}-battery_1"
+    assert entry.minor_version == 4
+
+
+@pytest.mark.parametrize(
+    ("device_id", "device_name", "slot", "expected_value"),
+    [
+        pytest.param(FRONT_DEVICE_ID, "front", 1, "80", id="single-battery-slot-1"),
+        pytest.param(
+            SPOTLIGHT_DEVICE_ID, "spotlight", 1, "12", id="dual-battery-slot-1"
+        ),
+        pytest.param(
+            SPOTLIGHT_DEVICE_ID, "spotlight", 2, "100", id="dual-battery-slot-2"
+        ),
+    ],
+)
+async def test_battery_slot_sensors(
+    hass: HomeAssistant,
+    mock_ring_client: Mock,
+    device_id: int,
+    device_name: str,
+    slot: int,
+    expected_value: str,
+) -> None:
+    """Test that per-slot battery sensors report the correct percentage."""
+    await setup_platform(hass, Platform.SENSOR)
+    await hass.async_block_till_done()
+
+    entity_id = f"sensor.{device_name}_battery_{slot}"
+    state = hass.states.get(entity_id)
+    assert state is not None, f"Entity {entity_id} not found"
+    assert state.state == expected_value

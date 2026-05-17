@@ -38,6 +38,7 @@ INGRESS_DEVICE_ID = 185036587
 FRONT_DEVICE_ID = 765432
 INTERNAL_DEVICE_ID = 345678
 DOWNSTAIRS_DEVICE_ID = 123456
+SPOTLIGHT_DEVICE_ID = 654321
 
 
 def get_mock_devices():
@@ -178,8 +179,26 @@ def _mocked_ring_device(device_dict, device_family, device_class, capabilities):
         mock_device.configure_mock(
             battery_life=min(
                 100, device_dict.get("battery_life", device_dict.get("battery_life2"))
-            )
+            ),
+            _attrs=device_dict,
+            _health_attrs={},
         )
+        if issubclass(device_class, RingDoorBell) and "battery_life_2" in device_dict:
+            mock_device.configure_mock(
+                _health_attrs={
+                    "batteries": [
+                        {
+                            "battery_number": 1,
+                            "battery_percentage": int(device_dict["battery_life"]),
+                        },
+                        {
+                            "battery_number": 2,
+                            "battery_percentage": int(device_dict["battery_life_2"]),
+                        },
+                    ],
+                    "active_battery": 1,
+                }
+            )
 
     if device_family == "doorbots":
         mock_device.configure_mock(

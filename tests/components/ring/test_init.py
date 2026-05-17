@@ -17,6 +17,7 @@ from homeassistant.components.ring.const import (
     SCAN_INTERVAL,
 )
 from homeassistant.components.ring.coordinator import RingConfigEntry, RingEventListener
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.config_entries import SOURCE_REAUTH, ConfigEntryState
 from homeassistant.const import CONF_DEVICE_ID, CONF_TOKEN, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -534,3 +535,43 @@ async def test_migrate_create_device_id(
     assert entry.data[CONF_DEVICE_ID] == MOCK_HARDWARE_ID
 
     assert "Migration to version 1.2 complete" in caplog.text
+
+
+@pytest.mark.usefixtures("mock_setup_entry")
+async def test_migrate_battery_unique_id(
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test migration renames battery unique_ids from *-battery to *-battery_1."""
+    entry = MockConfigEntry(
+        title="Ring",
+        domain=DOMAIN,
+        data={
+            CONF_USERNAME: "foo@bar.com",
+            "token": {"access_token": "mock-token"},
+            CONF_DEVICE_ID: "some-hw-id",
+        },
+        unique_id="foo@bar.com",
+        version=1,
+        minor_version=3,
+    )
+    entry.add_to_hass(hass)
+
+    old_unique_id = "987654-battery"
+    entity = entity_registry.async_get_or_create(
+        domain=SENSOR_DOMAIN,
+        platform=DOMAIN,
+        unique_id=old_unique_id,
+        config_entry=entry,
+    )
+    assert entity.unique_id == old_unique_id
+
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    migrated = entity_registry.async_get(entity.entity_id)
+    assert migrated is not None
+    assert migrated.unique_id == "987654-battery_1"
+    assert entry.minor_version == CONF_CONFIG_ENTRY_MINOR_VERSION
+    assert "Migration to version 1.4 complete" in caplog.text

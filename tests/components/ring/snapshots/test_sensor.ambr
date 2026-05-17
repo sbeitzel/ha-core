@@ -154,7 +154,7 @@
     'state': 'unknown',
   })
 # ---
-# name: test_states[sensor.front_battery-entry]
+# name: test_states[sensor.front_battery_1-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -170,7 +170,7 @@
     'disabled_by': None,
     'domain': 'sensor',
     'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
-    'entity_id': 'sensor.front_battery',
+    'entity_id': 'sensor.front_battery_1',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -178,39 +178,39 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': 'Battery',
+    'object_id_base': 'Battery 1',
     'options': dict({
     }),
     'original_device_class': <SensorDeviceClass.BATTERY: 'battery'>,
     'original_icon': None,
-    'original_name': 'Battery',
+    'original_name': 'Battery 1',
     'platform': 'ring',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': 0,
-    'translation_key': None,
-    'unique_id': '765432-battery',
+    'translation_key': 'battery_slot',
+    'unique_id': '765432-battery_1',
     'unit_of_measurement': '%',
   })
 # ---
-# name: test_states[sensor.front_battery-state]
+# name: test_states[sensor.front_battery_1-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'attribution': 'Data provided by Ring.com',
       'device_class': 'battery',
-      'friendly_name': 'Front Battery',
+      'friendly_name': 'Front Battery 1',
       'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
       'unit_of_measurement': '%',
     }),
     'context': <ANY>,
-    'entity_id': 'sensor.front_battery',
+    'entity_id': 'sensor.front_battery_1',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
     'state': '80',
   })
 # ---
-# name: test_states[sensor.front_door_battery-entry]
+# name: test_states[sensor.front_door_battery_1-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -226,7 +226,7 @@
     'disabled_by': None,
     'domain': 'sensor',
     'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
-    'entity_id': 'sensor.front_door_battery',
+    'entity_id': 'sensor.front_door_battery_1',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -234,36 +234,36 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': 'Battery',
+    'object_id_base': 'Battery 1',
     'options': dict({
     }),
     'original_device_class': <SensorDeviceClass.BATTERY: 'battery'>,
     'original_icon': None,
-    'original_name': 'Battery',
+    'original_name': 'Battery 1',
     'platform': 'ring',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': 0,
-    'translation_key': None,
-    'unique_id': '987654-battery',
+    'translation_key': 'battery_slot',
+    'unique_id': '987654-battery_1',
     'unit_of_measurement': '%',
   })
 # ---
-# name: test_states[sensor.front_door_battery-state]
+# name: test_states[sensor.front_door_battery_1-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'attribution': 'Data provided by Ring.com',
       'device_class': 'battery',
-      'friendly_name': 'Front Door Battery',
+      'friendly_name': 'Front Door Battery 1',
       'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
       'unit_of_measurement': '%',
     }),
     'context': <ANY>,
-    'entity_id': 'sensor.front_door_battery',
+    'entity_id': 'sensor.front_door_battery_1',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': '100',
+    'state': '4081',
   })
 # ---
 # name: test_states[sensor.front_door_last_activity-entry]
@@ -837,7 +837,7 @@
     'state': 'unknown',
   })
 # ---
-# name: test_states[sensor.ingress_battery-entry]
+# name: test_states[sensor.ingress_battery_1-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -853,7 +853,7 @@
     'disabled_by': None,
     'domain': 'sensor',
     'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
-    'entity_id': 'sensor.ingress_battery',
+    'entity_id': 'sensor.ingress_battery_1',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -861,32 +861,32 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': 'Battery',
+    'object_id_base': 'Battery 1',
     'options': dict({
     }),
     'original_device_class': <SensorDeviceClass.BATTERY: 'battery'>,
     'original_icon': None,
-    'original_name': 'Battery',
+    'original_name': 'Battery 1',
     'platform': 'ring',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': 0,
-    'translation_key': None,
-    'unique_id': '185036587-battery',
+    'translation_key': 'battery_slot',
+    'unique_id': '185036587-battery_1',
     'unit_of_measurement': '%',
   })
 # ---
-# name: test_states[sensor.ingress_battery-state]
+# name: test_states[sensor.ingress_battery_1-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'attribution': 'Data provided by Ring.com',
       'device_class': 'battery',
-      'friendly_name': 'Ingress Battery',
+      'friendly_name': 'Ingress Battery 1',
       'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
       'unit_of_measurement': '%',
     }),
     'context': <ANY>,
-    'entity_id': 'sensor.ingress_battery',
+    'entity_id': 'sensor.ingress_battery_1',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
@@ -1202,7 +1202,7 @@
     'state': 'unknown',
   })
 # ---
-# name: test_states[sensor.internal_battery-entry]
+# name: test_states[sensor.internal_battery_1-entry]
   EntityRegistryEntrySnapshot({
     'aliases': list([
       None,
@@ -1218,7 +1218,7 @@
     'disabled_by': None,
     'domain': 'sensor',
     'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
-    'entity_id': 'sensor.internal_battery',
+    'entity_id': 'sensor.internal_battery_1',
     'has_entity_name': True,
     'hidden_by': None,
     'icon': None,
@@ -1226,32 +1226,32 @@
     'labels': set({
     }),
     'name': None,
-    'object_id_base': 'Battery',
+    'object_id_base': 'Battery 1',
     'options': dict({
     }),
     'original_device_class': <SensorDeviceClass.BATTERY: 'battery'>,
     'original_icon': None,
-    'original_name': 'Battery',
+    'original_name': 'Battery 1',
     'platform': 'ring',
     'previous_unique_id': None,
     'suggested_object_id': None,
     'supported_features': 0,
-    'translation_key': None,
-    'unique_id': '345678-battery',
+    'translation_key': 'battery_slot',
+    'unique_id': '345678-battery_1',
     'unit_of_measurement': '%',
   })
 # ---
-# name: test_states[sensor.internal_battery-state]
+# name: test_states[sensor.internal_battery_1-state]
   StateSnapshot({
     'attributes': ReadOnlyDict({
       'attribution': 'Data provided by Ring.com',
       'device_class': 'battery',
-      'friendly_name': 'Internal Battery',
+      'friendly_name': 'Internal Battery 1',
       'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
       'unit_of_measurement': '%',
     }),
     'context': <ANY>,
-    'entity_id': 'sensor.internal_battery',
+    'entity_id': 'sensor.internal_battery_1',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
@@ -1512,6 +1512,378 @@
     }),
     'context': <ANY>,
     'entity_id': 'sensor.internal_wifi_signal_strength',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_states[sensor.spotlight_battery_1-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
+    'entity_id': 'sensor.spotlight_battery_1',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Battery 1',
+    'options': dict({
+    }),
+    'original_device_class': <SensorDeviceClass.BATTERY: 'battery'>,
+    'original_icon': None,
+    'original_name': 'Battery 1',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'battery_slot',
+    'unique_id': '654321-battery_1',
+    'unit_of_measurement': '%',
+  })
+# ---
+# name: test_states[sensor.spotlight_battery_1-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'device_class': 'battery',
+      'friendly_name': 'Spotlight Battery 1',
+      'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'unit_of_measurement': '%',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_battery_1',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '12',
+  })
+# ---
+# name: test_states[sensor.spotlight_battery_2-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
+    'entity_id': 'sensor.spotlight_battery_2',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Battery 2',
+    'options': dict({
+    }),
+    'original_device_class': <SensorDeviceClass.BATTERY: 'battery'>,
+    'original_icon': None,
+    'original_name': 'Battery 2',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'battery_slot',
+    'unique_id': '654321-battery_2',
+    'unit_of_measurement': '%',
+  })
+# ---
+# name: test_states[sensor.spotlight_battery_2-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'device_class': 'battery',
+      'friendly_name': 'Spotlight Battery 2',
+      'state_class': <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'unit_of_measurement': '%',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_battery_2',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '100',
+  })
+# ---
+# name: test_states[sensor.spotlight_last_activity-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.spotlight_last_activity',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Last activity',
+    'options': dict({
+    }),
+    'original_device_class': <SensorDeviceClass.TIMESTAMP: 'timestamp'>,
+    'original_icon': None,
+    'original_name': 'Last activity',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'last_activity',
+    'unique_id': '654321-last_activity',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_states[sensor.spotlight_last_activity-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'device_class': 'timestamp',
+      'friendly_name': 'Spotlight Last activity',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_last_activity',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_states[sensor.spotlight_last_ding-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.spotlight_last_ding',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Last ding',
+    'options': dict({
+    }),
+    'original_device_class': <SensorDeviceClass.TIMESTAMP: 'timestamp'>,
+    'original_icon': None,
+    'original_name': 'Last ding',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'last_ding',
+    'unique_id': '654321-last_ding',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_states[sensor.spotlight_last_ding-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'device_class': 'timestamp',
+      'friendly_name': 'Spotlight Last ding',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_last_ding',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_states[sensor.spotlight_last_motion-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.spotlight_last_motion',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Last motion',
+    'options': dict({
+    }),
+    'original_device_class': <SensorDeviceClass.TIMESTAMP: 'timestamp'>,
+    'original_icon': None,
+    'original_name': 'Last motion',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'last_motion',
+    'unique_id': '654321-last_motion',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_states[sensor.spotlight_last_motion-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'device_class': 'timestamp',
+      'friendly_name': 'Spotlight Last motion',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_last_motion',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_states[sensor.spotlight_wifi_signal_category-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
+    'entity_id': 'sensor.spotlight_wifi_signal_category',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Wi-Fi signal category',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Wi-Fi signal category',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'wifi_signal_category',
+    'unique_id': '654321-wifi_signal_category',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_states[sensor.spotlight_wifi_signal_category-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'friendly_name': 'Spotlight Wi-Fi signal category',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_wifi_signal_category',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_states[sensor.spotlight_wifi_signal_strength-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': <EntityCategory.DIAGNOSTIC: 'diagnostic'>,
+    'entity_id': 'sensor.spotlight_wifi_signal_strength',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Signal strength',
+    'options': dict({
+    }),
+    'original_device_class': <SensorDeviceClass.SIGNAL_STRENGTH: 'signal_strength'>,
+    'original_icon': None,
+    'original_name': 'Signal strength',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': None,
+    'unique_id': '654321-wifi_signal_strength',
+    'unit_of_measurement': 'dBm',
+  })
+# ---
+# name: test_states[sensor.spotlight_wifi_signal_strength-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'device_class': 'signal_strength',
+      'friendly_name': 'Spotlight Signal strength',
+      'unit_of_measurement': 'dBm',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.spotlight_wifi_signal_strength',
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,

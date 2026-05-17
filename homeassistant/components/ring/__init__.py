@@ -7,6 +7,7 @@ import uuid
 from ring_doorbell import Auth, Ring
 
 from homeassistant.components.camera import DOMAIN as CAMERA_DOMAIN
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.const import APPLICATION_NAME, CONF_DEVICE_ID, CONF_TOKEN
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr, entity_registry as er
@@ -161,6 +162,37 @@ async def async_migrate_entry(hass: HomeAssistant, entry: RingConfigEntry) -> bo
             return None
 
         await er.async_migrate_entries(hass, entry_id, _async_camera_unique_id_migrator)
+
+        hass.config_entries.async_update_entry(
+            entry,
+            minor_version=new_minor_version,
+        )
+        _LOGGER.debug(
+            "Migration to version %s.%s complete", entry_version, new_minor_version
+        )
+
+    entry_minor_version = entry.minor_version
+    new_minor_version = 4
+    if entry_version == 1 and entry_minor_version == 3:
+        _LOGGER.debug(
+            "Migrating from version %s.%s", entry_version, entry_minor_version
+        )
+
+        @callback
+        def _async_battery_unique_id_migrator(
+            entity_entry: er.RegistryEntry,
+        ) -> dict[str, str] | None:
+            if entity_entry.domain == SENSOR_DOMAIN and entity_entry.unique_id.endswith(
+                "-battery"
+            ):
+                return {
+                    "new_unique_id": f"{entity_entry.unique_id[: -len('battery')]}battery_1"
+                }
+            return None
+
+        await er.async_migrate_entries(
+            hass, entry_id, _async_battery_unique_id_migrator
+        )
 
         hass.config_entries.async_update_entry(
             entry,

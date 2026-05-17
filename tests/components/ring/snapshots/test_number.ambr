@@ -419,3 +419,63 @@
     'state': '11.0',
   })
 # ---
+# name: test_states[number.spotlight_volume-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      'max': 11,
+      'min': 0,
+      'mode': <NumberMode.SLIDER: 'slider'>,
+      'step': 1,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'number',
+    'entity_category': None,
+    'entity_id': 'number.spotlight_volume',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Volume',
+    'options': dict({
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Volume',
+    'platform': 'ring',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'volume',
+    'unique_id': '654321-volume',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_states[number.spotlight_volume-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'attribution': 'Data provided by Ring.com',
+      'friendly_name': 'Spotlight Volume',
+      'max': 11,
+      'min': 0,
+      'mode': <NumberMode.SLIDER: 'slider'>,
+      'step': 1,
+    }),
+    'context': <ANY>,
+    'entity_id': 'number.spotlight_volume',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '11.0',
+  })
+# ---

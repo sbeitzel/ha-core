@@ -43,6 +43,60 @@ from .entity import (
 PARALLEL_UPDATES = 0
 
 
+def _get_batteries(device: RingGeneric) -> list[dict] | None:
+    """Return list of battery dicts for the device.
+
+    For RingDoorBell (and subclasses): checks _health_attrs first (populated
+    after the first health refresh), then falls back to _attrs (flat fields
+    from device data, available at setup time).
+    Replace _health_attrs access with device.batteries once
+    python-ring-doorbell#524 ships and the HA requirement is bumped.
+    """
+    if device.family == "chimes":
+        return None
+    if isinstance(device, RingDoorBell):
+        batteries: list[dict] | None = device._health_attrs.get("batteries")  # noqa: SLF001
+        if batteries:
+            return batteries
+        bl1 = device._attrs.get("battery_life")  # noqa: SLF001
+        if bl1 is None:
+            return None
+        result: list[dict] = [{"battery_number": 1, "battery_percentage": int(bl1)}]
+        if bl2 := device._attrs.get("battery_life_2"):  # noqa: SLF001
+            result.append({"battery_number": 2, "battery_percentage": int(bl2)})
+        return result
+    # Other battery-capable devices (e.g. RingOther/intercom)
+    battery = device.battery_life
+    if battery is None:
+        return None
+    return [{"battery_number": 1, "battery_percentage": int(battery)}]
+
+
+def _battery_slot_description(slot: int) -> RingSensorEntityDescription[RingGeneric]:
+    """Return a sensor description for a single battery slot."""
+    return RingSensorEntityDescription[RingGeneric](
+        key=f"battery_{slot}",
+        translation_key="battery_slot",
+        translation_placeholders={"slot": str(slot)},
+        native_unit_of_measurement=PERCENTAGE,
+        device_class=SensorDeviceClass.BATTERY,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda device: (
+            next(
+                (
+                    bat["battery_percentage"]
+                    for bat in batteries
+                    if bat["battery_number"] == slot
+                ),
+                None,
+            )
+            if (batteries := _get_batteries(device))
+            else None
+        ),
+    )
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: RingConfigEntry,
@@ -52,7 +106,7 @@ async def async_setup_entry(
     ring_data = entry.runtime_data
     devices_coordinator = ring_data.devices_coordinator
 
-    entities = [
+    entities: list[RingSensor] = [
         RingSensor(device, devices_coordinator, description)
         for description in SENSOR_TYPES
         for device in ring_data.devices.all_devices
@@ -64,6 +118,16 @@ async def async_setup_entry(
             description,
         )
     ]
+
+    for device in ring_data.devices.all_devices:
+        if slot_batteries := _get_batteries(device):
+            for battery in slot_batteries:
+                slot = battery["battery_number"]
+                entities.append(
+                    RingSensor(
+                        device, devices_coordinator, _battery_slot_description(slot)
+                    )
+                )
 
     async_add_entities(entities)
 
@@ -154,15 +218,6 @@ class RingSensorEntityDescription(
 # be fixed and the [RingGeneric] subscript can be removed.
 # https://github.com/home-assistant/core/pull/115276#discussion_r1560106576
 SENSOR_TYPES: tuple[RingSensorEntityDescription[Any], ...] = (
-    RingSensorEntityDescription[RingGeneric](
-        key="battery",
-        native_unit_of_measurement=PERCENTAGE,
-        device_class=SensorDeviceClass.BATTERY,
-        state_class=SensorStateClass.MEASUREMENT,
-        entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda device: device.battery_life,
-        exists_fn=lambda device: device.family != "chimes",
-    ),
     RingSensorEntityDescription[RingGeneric](
         key="last_activity",
         translation_key="last_activity",
