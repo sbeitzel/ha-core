@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 import logging
+from typing import override
 
 from aioairq.core import AirQ, identify_warming_up_sensors
 
@@ -50,6 +51,7 @@ class AirQCoordinator(DataUpdateCoordinator):
         self.clip_negative = clip_negative
         self.return_average = return_average
 
+    @override
     async def _async_update_data(self) -> dict:
         """Fetch the data from the device."""
         if "name" not in self.device_info:
@@ -68,7 +70,7 @@ class AirQCoordinator(DataUpdateCoordinator):
             )
             _LOGGER.debug(
                 "Updated AirQCoordinator.device_info for 'name' %s",
-                self.device_info.get("name"),
+                info["name"],
             )
         data: dict = await self.airq.get_latest_data(
             return_average=self.return_average,

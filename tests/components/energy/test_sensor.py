@@ -8,7 +8,7 @@ from typing import Any
 from freezegun.api import FrozenDateTimeFactory
 import pytest
 
-from homeassistant.components.energy import async_get_manager, data
+from homeassistant.components.energy import DOMAIN, async_get_manager, data
 from homeassistant.components.energy.sensor import (
     EnergyCostSensor,
     EnergyPowerSensor,
@@ -41,7 +41,7 @@ from homeassistant.util import dt as dt_util
 from homeassistant.util.unit_conversion import _WH_TO_CAL, _WH_TO_J
 from homeassistant.util.unit_system import METRIC_SYSTEM, US_CUSTOMARY_SYSTEM
 
-from tests.common import MockConfigEntry
+from tests.common import MockConfigEntry, async_fire_time_changed
 from tests.components.recorder.common import async_wait_recording_done
 from tests.typing import WebSocketGenerator
 
@@ -55,7 +55,7 @@ async def setup_integration(
     """Set up the integration."""
 
     async def setup_integration(hass: HomeAssistant) -> None:
-        assert await async_setup_component(hass, "energy", {})
+        assert await async_setup_component(hass, DOMAIN, {})
         await hass.async_block_till_done()
 
     return setup_integration
@@ -1394,7 +1394,7 @@ async def test_power_sensor_manager_creation(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test SensorManager creates power sensors correctly."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1434,7 +1434,7 @@ async def test_power_sensor_inverted_propagates_unit(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test inverted power sensor copies unit from the source state."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1486,7 +1486,7 @@ async def test_power_sensor_inverted_source_without_unit(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test inverted sensor reports no unit when source has none."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1519,7 +1519,7 @@ async def test_power_sensor_manager_cleanup(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test SensorManager removes power sensors when config changes."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1574,7 +1574,7 @@ async def test_power_sensor_grid_combined(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test power sensor for grid with combined config."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1625,7 +1625,7 @@ async def test_power_sensor_device_assignment(
     device_registry: dr.DeviceRegistry,
 ) -> None:
     """Test power sensor is assigned to same device as source sensor."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1687,7 +1687,7 @@ async def test_power_sensor_device_assignment_combined_second_sensor(
     device_registry: dr.DeviceRegistry,
 ) -> None:
     """Test power sensor checks second sensor if first has no device."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1762,7 +1762,7 @@ async def test_power_sensor_inverted_availability(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test inverted power sensor availability follows source sensor."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1815,7 +1815,7 @@ async def test_power_sensor_combined_availability(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test combined power sensor availability requires both sources available."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1887,7 +1887,7 @@ async def test_power_sensor_battery_combined(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test power sensor for battery with combined config."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1947,7 +1947,7 @@ async def test_power_sensor_combined_unit_conversion(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test power sensor combined mode with different units."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -1996,7 +1996,7 @@ async def test_power_sensor_inverted_negative_values(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test inverted power sensor with negative source values."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2074,7 +2074,7 @@ async def test_energy_data_removal(
         },
     )
 
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     await hass.async_block_till_done()
 
     # Verify cost sensor was created
@@ -2331,7 +2331,7 @@ async def test_power_sensor_inverted_invalid_value(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test inverted power sensor with invalid source value."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2375,7 +2375,7 @@ async def test_power_sensor_combined_invalid_value(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test combined power sensor with invalid source value."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2447,7 +2447,7 @@ async def test_power_sensor_naming_fallback(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test power sensor naming when source not in registry."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2485,7 +2485,7 @@ async def test_power_sensor_no_device_assignment(
     entity_registry: er.EntityRegistry,
 ) -> None:
     """Test power sensor when source sensors have no device."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2528,7 +2528,7 @@ async def test_power_sensor_keeps_existing_on_update(
     recorder_mock: Recorder, hass: HomeAssistant
 ) -> None:
     """Test that existing power sensor is kept when config doesn't change."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2638,7 +2638,7 @@ async def test_power_sensor_naming_with_registry_name(
     entity_registry: er.EntityRegistry,
 ) -> None:
     """Test power sensor naming uses registry name when available."""
-    assert await async_setup_component(hass, "energy", {"energy": {}})
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
     manager = await async_get_manager(hass)
     manager.data = manager.default_preferences()
 
@@ -2758,53 +2758,192 @@ async def test_missing_price_entity(
     assert state.state == "150.0"
 
 
-async def test_energy_cost_sensor_add_to_platform_abort(
-    recorder_mock: Recorder, hass: HomeAssistant
-) -> None:
-    """Test EnergyCostSensor.add_to_platform_abort sets the future."""
-    adapter = SourceAdapter(
-        source_type="grid",
-        flow_type="flow_from",
-        stat_energy_key="stat_energy_from",
-        total_money_key="stat_cost",
-        name_suffix="Cost",
-        entity_id_suffix="cost",
+def _make_cost_sensor() -> EnergyCostSensor:
+    """Build an EnergyCostSensor for the abort test."""
+    return EnergyCostSensor(
+        SourceAdapter(
+            source_type="grid",
+            flow_type="flow_from",
+            stat_energy_key="stat_energy_from",
+            total_money_key="stat_cost",
+            name_suffix="Cost",
+            entity_id_suffix="cost",
+        ),
+        {
+            "stat_energy_from": "sensor.energy",
+            "stat_cost": None,
+            "entity_energy_price": "sensor.price",
+            "number_energy_price": None,
+        },
     )
-    config = {
-        "stat_energy_from": "sensor.energy",
-        "stat_cost": None,
-        "entity_energy_price": "sensor.price",
-        "number_energy_price": None,
-    }
-
-    sensor = EnergyCostSensor(adapter, config)
-
-    # Future should not be done yet
-    assert not sensor.add_finished.done()
-
-    # Call abort
-    sensor.add_to_platform_abort()
-
-    # Future should now be done
-    assert sensor.add_finished.done()
 
 
-async def test_energy_power_sensor_add_to_platform_abort(
-    recorder_mock: Recorder, hass: HomeAssistant
-) -> None:
-    """Test EnergyPowerSensor.add_to_platform_abort sets the future."""
-    sensor = EnergyPowerSensor(
+def _make_power_sensor() -> EnergyPowerSensor:
+    """Build an EnergyPowerSensor for the abort test."""
+    return EnergyPowerSensor(
         source_type="battery",
         config={"stat_rate_inverted": "sensor.battery_power"},
         unique_id="test_unique_id",
         entity_id="sensor.test_power",
     )
 
-    # Future should not be done yet
+
+@pytest.mark.usefixtures("recorder_mock", "hass")
+@pytest.mark.parametrize(
+    "make_sensor",
+    [
+        pytest.param(_make_cost_sensor, id="cost"),
+        pytest.param(_make_power_sensor, id="power"),
+    ],
+)
+async def test_add_finished_resolved_on_abort(
+    make_sensor: Callable[[], EnergyCostSensor | EnergyPowerSensor],
+) -> None:
+    """Test an aborted add resolves add_finished so SensorManager does not hang."""
+    sensor = make_sensor()
+
     assert not sensor.add_finished.done()
 
-    # Call abort
     sensor.add_to_platform_abort()
 
-    # Future should now be done
     assert sensor.add_finished.done()
+
+
+@pytest.mark.parametrize(
+    ("energy_source", "power_entity_id"),
+    [
+        pytest.param(
+            {
+                "type": "battery",
+                "stat_energy_from": "sensor.battery_energy_from",
+                "stat_energy_to": "sensor.battery_energy_to",
+                "power_config": {"stat_rate_inverted": "sensor.battery_power"},
+            },
+            "sensor.battery_power_inverted",
+            id="battery_inverted",
+        ),
+        pytest.param(
+            {
+                "type": "grid",
+                "stat_energy_from": "sensor.grid_energy_import",
+                "stat_energy_to": "sensor.grid_energy_export",
+                "power_config": {
+                    "stat_rate_from": "sensor.grid_import",
+                    "stat_rate_to": "sensor.grid_export",
+                },
+                "cost_adjustment_day": 0,
+            },
+            "sensor.energy_grid_grid_import_grid_export_net_power",
+            id="grid_combined",
+        ),
+    ],
+)
+async def test_power_sensor_rename_updates_stat_rate(
+    recorder_mock: Recorder,
+    hass: HomeAssistant,
+    hass_storage: dict[str, Any],
+    entity_registry: er.EntityRegistry,
+    freezer: FrozenDateTimeFactory,
+    energy_source: data.SourceType,
+    power_entity_id: str,
+) -> None:
+    """Test renaming a power sensor updates stat_rate in the preferences."""
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
+    manager = await async_get_manager(hass)
+    manager.data = manager.default_preferences()
+
+    await manager.async_update({"energy_sources": [energy_source]})
+    await hass.async_block_till_done()
+    assert manager.data["energy_sources"][0]["stat_rate"] == power_entity_id
+
+    entity_registry.async_update_entity(
+        power_entity_id, new_entity_id="sensor.renamed_power"
+    )
+    await hass.async_block_till_done()
+
+    assert hass.states.get("sensor.renamed_power") is not None
+    assert manager.data["energy_sources"][0]["stat_rate"] == "sensor.renamed_power"
+
+    freezer.tick(timedelta(seconds=60))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done()
+    assert (
+        hass_storage[data.STORAGE_KEY]["data"]["energy_sources"][0]["stat_rate"]
+        == "sensor.renamed_power"
+    )
+
+
+async def test_power_sensor_rename_other_entity_keeps_prefs(
+    recorder_mock: Recorder,
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+) -> None:
+    """Test renaming an entity which is not a power sensor leaves prefs alone."""
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
+    manager = await async_get_manager(hass)
+    manager.data = manager.default_preferences()
+    entity_registry.async_get_or_create(
+        "sensor", "test", "battery_power", suggested_object_id="battery_power"
+    )
+
+    await manager.async_update(
+        {
+            "energy_sources": [
+                {
+                    "type": "battery",
+                    "stat_energy_from": "sensor.battery_energy_from",
+                    "stat_energy_to": "sensor.battery_energy_to",
+                    "power_config": {"stat_rate_inverted": "sensor.battery_power"},
+                }
+            ],
+        }
+    )
+    await hass.async_block_till_done()
+    prefs = manager.data
+
+    entity_registry.async_update_entity(
+        "sensor.battery_power", new_entity_id="sensor.battery_power_renamed"
+    )
+    await hass.async_block_till_done()
+
+    assert manager.data is prefs
+    assert prefs["energy_sources"][0]["stat_rate"] == "sensor.battery_power_inverted"
+
+
+async def test_power_sensor_suggested_entity_id_taken(
+    recorder_mock: Recorder,
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+) -> None:
+    """Test stat_rate follows the power sensor when its entity_id is taken."""
+    assert await async_setup_component(hass, DOMAIN, {"energy": {}})
+    manager = await async_get_manager(hass)
+    manager.data = manager.default_preferences()
+    entity_registry.async_get_or_create(
+        "sensor", "test", "taken", suggested_object_id="battery_power_inverted"
+    )
+
+    await manager.async_update(
+        {
+            "energy_sources": [
+                {
+                    "type": "battery",
+                    "stat_energy_from": "sensor.battery_energy_from",
+                    "stat_energy_to": "sensor.battery_energy_to",
+                    "power_config": {"stat_rate_inverted": "sensor.battery_power"},
+                }
+            ],
+        }
+    )
+    await hass.async_block_till_done()
+
+    assert (
+        entity_registry.async_get_entity_id(
+            "sensor", DOMAIN, "energy_power_battery_inverted_sensor_battery_power"
+        )
+        == "sensor.battery_power_inverted_2"
+    )
+    assert (
+        manager.data["energy_sources"][0]["stat_rate"]
+        == "sensor.battery_power_inverted_2"
+    )

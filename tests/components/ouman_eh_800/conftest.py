@@ -50,6 +50,7 @@ _ENDPOINT_VALUES: dict[OumanEndpoint, OumanValues] = {
     SystemEndpoints.TREND_SAMPLE_INTERVAL: 600.0,
     SystemEndpoints.HOME_AWAY_MODE: HomeAwayControl.HOME,
     SystemEndpoints.OUTSIDE_TEMPERATURE: 0.4,
+    SystemEndpoints.AUTUMN_DRYING_OUTDOOR_TEMP_LIMIT: 7.0,
     SystemEndpoints.RELAY_CONFIGURATION_TYPE: "",
     SystemEndpoints.RELAY_STATUS_TEXT: "Rele ei käytössä",
     SystemEndpoints.L2_INSTALLED_STATUS: "1",
@@ -64,6 +65,7 @@ _ENDPOINT_VALUES: dict[OumanEndpoint, OumanValues] = {
     L1BaseEndpoints.VALVE_POSITION: 11.0,
     L1BaseEndpoints.CURVE_SUPPLY_WATER_TEMPERATURE: 41.0,
     L1BaseEndpoints.FINE_ADJUSTMENT_EFFECT: 0.0,
+    L1BaseEndpoints.AUTUMN_DRYING_EFFECT: 0.0,
     L1BaseEndpoints.SUPPLY_WATER_TEMPERATURE_SETPOINT: 43.7,
     L1BaseEndpoints.ROOM_SENSOR_INSTALLED: "off",
     # L1 three-point curve
@@ -80,10 +82,12 @@ _ENDPOINT_VALUES: dict[OumanEndpoint, OumanValues] = {
     L1NoRoomSensor.TEMPERATURE_DROP: 6.0,
     L1NoRoomSensor.BIG_TEMPERATURE_DROP: 16.0,
     L1NoRoomSensor.ROOM_TEMPERATURE_FINE_TUNING: 0.0,
+    L1NoRoomSensor.AUTUMN_DRYING_SETPOINT: 4.0,
     # L1 room sensor
     L1RoomSensor.TEMPERATURE_DROP: 1.0,
     L1RoomSensor.BIG_TEMPERATURE_DROP: 3.0,
     L1RoomSensor.ROOM_TEMPERATURE_FINE_TUNING: 0.0,
+    L1RoomSensor.AUTUMN_DRYING_SETPOINT: 1.0,
     L1RoomSensor.ROOM_TEMPERATURE_SETPOINT_USER: 21.0,
     L1RoomSensor.ROOM_SENSOR_POTENTIOMETER: 0.0,
     L1RoomSensor.ROOM_TEMPERATURE: 21.5,
@@ -102,6 +106,7 @@ _ENDPOINT_VALUES: dict[OumanEndpoint, OumanValues] = {
     L2BaseEndpoints.VALVE_POSITION: 5.0,
     L2BaseEndpoints.CURVE_SUPPLY_WATER_TEMPERATURE: 30.0,
     L2BaseEndpoints.DELAYED_OUTDOOR_TEMPERATURE_EFFECT: 0.0,
+    L2BaseEndpoints.AUTUMN_DRYING_EFFECT: 0.0,
     L2BaseEndpoints.SUPPLY_WATER_TEMPERATURE_SETPOINT: 30.0,
     L2BaseEndpoints.ROOM_SENSOR_INSTALLED: "on",
     # L2 three-point curve
@@ -118,10 +123,12 @@ _ENDPOINT_VALUES: dict[OumanEndpoint, OumanValues] = {
     L2NoRoomSensor.TEMPERATURE_DROP: 6.0,
     L2NoRoomSensor.BIG_TEMPERATURE_DROP: 16.0,
     L2NoRoomSensor.ROOM_TEMPERATURE_FINE_TUNING: 0.0,
+    L2NoRoomSensor.AUTUMN_DRYING_SETPOINT: 4.0,
     # L2 room sensor
     L2RoomSensor.TEMPERATURE_DROP: 1.0,
     L2RoomSensor.BIG_TEMPERATURE_DROP: 3.0,
     L2RoomSensor.ROOM_TEMPERATURE_FINE_TUNING: 0.0,
+    L2RoomSensor.AUTUMN_DRYING_SETPOINT: 1.0,
     L2RoomSensor.ROOM_TEMPERATURE_SETPOINT_USER: 21.0,
     L2RoomSensor.ROOM_TEMPERATURE: 22.0,
     L2RoomSensor.DELAYED_ROOM_TEMPERATURE: 21.9,
@@ -236,6 +243,21 @@ def mock_ouman_client(registry_set: OumanRegistrySet) -> Generator[AsyncMock]:
         client = mock_client.return_value
         client.get_active_registries.return_value = registry_set
         client.get_values.return_value = values
+
+        # Simulate the device: a successful write changes what subsequent
+        # reads return, so the coordinator's post-write refresh keeps the
+        # new value instead of reverting. The API library parses numeric
+        # responses as floats via ``NumberOumanEndpoint.parse_value``, so
+        # we mirror that here so int writes round-trip as floats. Tests can
+        # override by replacing ``set_endpoint_value.side_effect``.
+        def _set_endpoint_value(
+            endpoint: OumanEndpoint, value: OumanValues
+        ) -> OumanValues:
+            stored: OumanValues = float(value) if isinstance(value, int) else value
+            values[endpoint] = stored
+            return stored
+
+        client.set_endpoint_value.side_effect = _set_endpoint_value
         yield client
 
 

@@ -3,7 +3,7 @@
 from collections.abc import Callable
 import dataclasses
 from datetime import datetime, timedelta
-from typing import Final
+from typing import Final, override
 
 from ovoenergy.models import OVODailyUsage
 
@@ -163,12 +163,14 @@ class OVOEnergySensor(OVOEnergyDeviceEntity, SensorEntity):
     ) -> None:
         """Initialize."""
         super().__init__(coordinator)
+        # Legacy format, kept as migrating existing unique IDs is not worth the risk
         self._attr_unique_id = (
-            f"{DOMAIN}_{coordinator.client.account_id}_{description.key}"
+            f"{DOMAIN}_{coordinator.client.account_id}_{description.key}"  # pylint: disable=home-assistant-entity-unique-id-redundant-domain
         )
         self.entity_description = description
 
     @property
+    @override
     def native_value(self) -> StateType | datetime:
         """Return the state."""
         usage = self.coordinator.data

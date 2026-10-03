@@ -6,14 +6,7 @@ from datetime import timedelta
 from ipaddress import ip_address
 import json
 from typing import Any
-from unittest.mock import (
-    AsyncMock,
-    MagicMock,
-    PropertyMock,
-    call,
-    create_autospec,
-    patch,
-)
+from unittest.mock import AsyncMock, MagicMock, call, create_autospec, patch
 import uuid
 
 import pytest
@@ -200,7 +193,7 @@ async def consume_progress_flow(
         result = await flow_manager.async_configure(flow_id)
         flow_id = result["flow_id"]
 
-        if result["type"] != FlowResultType.SHOW_PROGRESS:
+        if result["type"] is not FlowResultType.SHOW_PROGRESS:
             break
 
         assert result["type"] is FlowResultType.SHOW_PROGRESS
@@ -1795,7 +1788,9 @@ async def test_onboarding_auto_formation_new_hardware(
     """Test auto network formation with new hardware during onboarding."""
     # Initially, no network is formed
     mock_app.load_network_info = DelayedAsyncMock(side_effect=NetworkNotFormed())
-    mock_app.get_device = MagicMock(return_value=MagicMock(spec=zigpy.device.Device))
+    mock_app.get_device = MagicMock(
+        return_value=MagicMock(spec=zigpy.device.ZigbeeDevice)
+    )
 
     # After form_network is called, load_network_info should return the network settings
     async def form_network_side_effect(*args, **kwargs):
@@ -2165,17 +2160,11 @@ async def test_formation_strategy_restore_automatic_backup_non_ezsp(
 
     result = await advanced_pick_radio(RadioType.znp)
 
-    with patch(
-        "homeassistant.config_entries.ConfigFlow.show_advanced_options",
-        new_callable=PropertyMock(return_value=is_advanced),
-    ):
-        result2 = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            user_input={
-                "next_step_id": (config_flow.FORMATION_CHOOSE_AUTOMATIC_BACKUP)
-            },
-        )
-        await hass.async_block_till_done()
+    result2 = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={"next_step_id": (config_flow.FORMATION_CHOOSE_AUTOMATIC_BACKUP)},
+    )
+    await hass.async_block_till_done()
 
     assert result2["type"] is FlowResultType.FORM
     assert result2["step_id"] == "choose_automatic_backup"

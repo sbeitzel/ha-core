@@ -1,15 +1,11 @@
 """Support for testing internet speed via Fast.com."""
 
-import logging
-
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.start import async_at_started
 
 from .const import PLATFORMS
 from .coordinator import FastdotcomConfigEntry, FastdotcomDataUpdateCoordinator
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: FastdotcomConfigEntry) -> bool:
@@ -24,7 +20,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: FastdotcomConfigEntry) -
 
     async def _async_finish_startup(hass: HomeAssistant) -> None:
         """Run this only when HA has finished its startup."""
-        if entry.state == ConfigEntryState.LOADED:
+        if entry.state is ConfigEntryState.LOADED:
             await coordinator.async_refresh()
         else:
             await coordinator.async_config_entry_first_refresh()
